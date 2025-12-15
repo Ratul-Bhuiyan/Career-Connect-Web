@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Connect - Internship & Placement Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .navbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar h1 {
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .nav-links button:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .search-bar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      color: #667eea;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .filters {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filters select {
+      padding: 0.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .job-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    .job-card h3 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .job-card .company {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .job-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .tag {
+      background: #e8eaf6;
+      color: #667eea;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .application-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-applied {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status-withdrawn {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .deadline-warning {
+      color: #d32f2f;
+      font-weight: 600;
+    }
+
+    .deadline-ok {
+      color: #388e3c;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .job-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <h1>🎓 Career Connect</h1>
+    <div class="nav-links">
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('jobs')">Jobs</button>
+      <button onclick="showPage('applications')">My Applications</button>
+      <button onclick="showPage('profile')">Profile</button>
+      <button onclick="showPage('admin')">Admin Panel</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Home Page -->
+    <div id="home" class="page active">
+      <div class="search-bar">
+        <input type="text" id="homeSearch" placeholder="🔍 Search jobs by title, company, or location..." oninput="searchJobs()">
+      </div>
+      
+      <div class="stats">
+        <div class="stat-card">
+          <h3 id="totalJobs">0</h3>
+          <p>Total Jobs Available</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalInternships">0</h3>
+          <p>Open Internships</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="myApplications">0</h3>
+          <p>My Applications</p>
+        </div>
+      </div>
+
+      <h2 style="margin-bottom: 1rem;">Featured Opportunities</h2>
+      <div id="featuredJobs" class="job-grid"></div>
+    </div>
+
+    <!-- Jobs Page -->
+    <div id="jobs" class="page">
+      <div class="filters">
+        <select id="filterType" onchange="filterJobs()">
+          <option value="">All Types</option>
+          <option value="Internship">Internship</option>
+          <option value="Full-Time">Full-Time</option>
+        </select>
+        <select id="filterLocation" onchange="filterJobs()">
+          <option value="">All Locations</option>
+        </select>
+        <select id="sortBy" onchange="filterJobs()">
+          <option value="newest">Newest First</option>
+          <option value="deadline">Closing Soon</option>
+          <option value="stipend">Highest Stipend</option>
+        </select>
+      </div>
+      <div id="jobsList" class="job-grid"></div>
+    </div>
+
+    <!-- Applications Page -->
+    <div id="applications" class="page">
+      <h2 style="margin-bottom: 1.5rem;">My Applications</h2>
+      <div id="applicationsList"></div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="page">
+      <div class="modal-content" style="max-width: 600px; margin: 0 auto;">
+        <h2 style="margin-bottom: 1.5rem;">Student Profile</h2>
+        <form id="profileForm" onsubmit="saveProfile(event)">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="profileName" required>
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="profileEmail" required>
+          </div>
+          <div class="form-group">
+            <label>University *</label>
+            <input type="text" id="profileUniversity" required>
+          </div>
+          <div class="form-group">
+            <label>Department *</label>
+            <input type="text" id="profileDepartment" required>
+          </div>
+          <div class="form-group">
+            <label>Year *</label>
+            <select id="profileYear" required>
+              <option value="">Select Year</option>
+              <option value="1st">1st Year</option>
+              <option value="2nd">2nd Year</option>
+              <option value="3rd">3rd Year</option>
+              <option value="4th">4th Year</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Phone *</label>
+            <input type="tel" id="profilePhone" required>
+          </div>
+          <div class="form-group">
+            <label>Resume Link *</label>
+            <input type="url" id="profileResume" placeholder="https://drive.google.com/..." required>
+          </div>
+          <button type="submit" class="btn">Save Profile</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="admin" class="page">
+      <h2 style="margin-bottom: 1.5rem;">Admin Panel - Post New Job</h2>
+      <div class="modal-content" style="max-width: 700px; margin: 0 auto 2rem;">
+        <form id="jobForm" onsubmit="postJob(event)">
+          <div class="form-group">
+            <label>Job Title *</label>
+            <input type="text" id="jobTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Company *</label>
+            <input type="text" id="jobCompany" required>
+          </div>
+          <div class="form-group">
+            <label>Location *</label>
+            <input type="text" id="jobLocation" required>
+          </div>
+          <div class="form-group">
+            <label>Job Type *</label>
+            <select id="jobType" required>
+              <option value="Internship">Internship</option>
+              <option value="Full-Time">Full-Time</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Stipend/Salary *</label>
+            <input type="text" id="jobStipend" placeholder="e.g., ₹15,000/month" required>
+          </div>
+          <div class="form-group">
+            <label>Deadline *</label>
+            <input type="date" id="jobDeadline" required>
+          </div>
+          <div class="form-group">
+            <label>Skills Required (comma-separated) *</label>
+            <input type="text" id="jobSkills" placeholder="React, Node.js, MongoDB" required>
+          </div>
+          <div class="form-group">
+            <label>Job Description *</label>
+            <textarea id="jobDescription" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Responsibilities *</label>
+            <textarea id="jobResponsibilities" required></textarea>
+          </div>
+          <button type="submit" class="btn">Post Job</button>
+        </form>
+      </div>
+
+      <h2 style="margin-bottom: 1.5rem;">Manage Jobs</h2>
+      <div id="adminJobsList"></div>
+    </div>
+  </div>
+
+  <!-- Job Details Modal -->
+  <div id="jobModal" class="modal">
+    <div class="modal-content">
+      <div id="jobDetails"></div>
+    </div>
+  </div>
+
+  <!-- Apply Modal -->
+  <div id="applyModal" class="modal">
+    <div class="modal-content">
+      <h2>Apply for Position</h2>
+      <div id="applyDetails"></div>
+    </div>
+  </div>
+
+  <script>
+    let jobs = [];
+    let applications = [];
+    let profile = null;
+    let currentJob = null;
+
+    // Initialize app
+    function init() {
+      loadData();
+      if (!jobs.length) {
+        initializeSampleJobs();
+      }
+      updateStats();
+      renderFeaturedJobs();
+      renderJobsList();
+      loadProfile();
+      populateLocationFilter();
+    }
+
+    function loadData() {
+      jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+      applications = JSON.parse(localStorage.getItem('applications') || '[]');
+      profile = JSON.parse(localStorage.getItem('profile') || 'null');
+    }
+
+    function saveData() {
+      localStorage.setItem('jobs', JSON.stringify(jobs));
+      localStorage.setItem('applications', JSON.stringify(applications));
+    }
+
+    function initializeSampleJobs() {
+      jobs = [
+        {
+          id: 1,
+          title: 'Frontend Developer Intern',
+          company: 'TechCorp Solutions',
+          location: 'Bangalore',
+          type: 'Internship',
+          stipend: '₹20,000/month',
+          deadline: '2025-01-15',
+          skills: ['React', 'JavaScript', 'CSS'],
+          description: 'Work on cutting-edge web applications using modern frameworks.',
+          responsibilities: 'Develop UI components, collaborate with design team, write clean code.',
+          applicants: 0,
+          status: 'open'
+        },
+        {
+          id: 2,
+          title: 'Data Science Intern',
+          company: 'DataMinds AI',
+          location: 'Hyderabad',
+          type: 'Internship',
+          stipend: '₹25,000/month',
+          deadline: '2025-01-20',
+          skills: ['Python', 'Machine Learning', 'Pandas'],
+          description: 'Analyze large datasets and build predictive models.',
+          responsibilities: 'Data preprocessing, model training, visualization.',
+          applicants: 0,
+          status: 'open'
+        },
+        {
+          id: 3,
+          title: 'Full Stack Developer',
+          company: 'StartupHub',
+          location: 'Mumbai',
+          type: 'Full-Time',
+          stipend: '₹8,00,000/year',
+          deadline: '2025-01-10',
+          skills: ['Node.js', 'React', 'MongoDB'],
+          description: 'Join our dynamic team to build scalable web applications.',
+          responsibilities: 'Design APIs, implement features, optimize performance.',
+          applicants: 0,
+          status: 'open'
+        },
+        {
+          id: 4,
+          title: 'Mobile App Developer',
+          company: 'AppVentures',
+          location: 'Pune',
+          type: 'Full-Time',
+          stipend: '₹10,00,000/year',
+          deadline: '2025-01-25',
+          skills: ['React Native', 'Flutter', 'Firebase'],
+          description: 'Create beautiful mobile experiences for millions of users.',
+          responsibilities: 'Build cross-platform apps, integrate APIs, ensure quality.',
+          applicants: 0,
+          status: 'open'
+        }
+      ];
+      saveData();
+    }
+
+    function showPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(page).classList.add('active');
+      
+      if (page === 'jobs') renderJobsList();
+      if (page === 'applications') renderApplications();
+      if (page === 'admin') renderAdminJobs();
+    }
+
+    function updateStats() {
+      document.getElementById('totalJobs').textContent = jobs.filter(j => j.status === 'open').length;
+      document.getElementById('totalInternships').textContent = jobs.filter(j => j.type === 'Internship' && j.status === 'open').length;
+      document.getElementById('myApplications').textContent = applications.filter(a => a.status === 'Applied').length;
+    }
+
+    function renderFeaturedJobs() {
+      const container = document.getElementById('featuredJobs');
+      const featured = jobs.filter(j => j.status === 'open').slice(0, 6);
+      container.innerHTML = featured.map(job => createJobCard(job)).join('');
+    }
+
+    function createJobCard(job) {
+      const daysLeft = getDaysLeft(job.deadline);
+      const deadlineClass = daysLeft <= 3 ? 'deadline-warning' : 'deadline-ok';
+      const hasApplied = applications.some(a => a.jobId === job.id && a.status === 'Applied');
+      
+      return `
+        <div class="job-card" onclick="showJobDetails(${job.id})">
+          <h3>${job.title}</h3>
+          <p class="company">🏢 ${job.company} • 📍 ${job.location}</p>
+          <div class="job-tags">
+            <span class="tag">${job.type}</span>
+            <span class="tag">💰 ${job.stipend}</span>
+          </div>
+          <div class="job-tags">
+            ${job.skills.map(s => `<span class="tag">${s}</span>`).join('')}
+          </div>
+          <p class="${deadlineClass}">⏰ ${daysLeft > 0 ? daysLeft + ' days left' : 'Deadline passed'}</p>
+          ${hasApplied ? '<p style="color: #2e7d32; font-weight: 600; margin-top: 0.5rem;">✓ Already Applied</p>' : ''}
+        </div>
+      `;
+    }
+
+    function getDaysLeft(deadline) {
+      const today = new Date();
+      const deadlineDate = new Date(deadline);
+      const diff = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+      return diff;
+    }
+
+    function showJobDetails(jobId) {
+      currentJob = jobs.find(j => j.id === jobId);
+      const daysLeft = getDaysLeft(currentJob.deadline);
+      const canApply = daysLeft > 0;
+      const hasApplied = applications.some(a => a.jobId === jobId && a.status === 'Applied');
+      
+      document.getElementById('jobDetails').innerHTML = `
+        <h2>${currentJob.title}</h2>
+        <p style="color: #666; margin-bottom: 1rem;">🏢 ${currentJob.company} • 📍 ${currentJob.location}</p>
+        <div class="job-tags" style="margin-bottom: 1rem;">
+          <span class="tag">${currentJob.type}</span>
+          <span class="tag">💰 ${currentJob.stipend}</span>
+          <span class="tag ${daysLeft <= 3 ? 'deadline-warning' : 'deadline-ok'}">
+            ⏰ ${daysLeft > 0 ? daysLeft + ' days left' : 'Deadline passed'}
+          </span>
+        </div>
+        <h3>Required Skills</h3>
+        <div class="job-tags" style="margin-bottom: 1rem;">
+          ${currentJob.skills.map(s => `<span class="tag">${s}</span>`).join('')}
+        </div>
+        <h3>Description</h3>
+        <p style="margin-bottom: 1rem;">${currentJob.description}</p>
+        <h3>Responsibilities</h3>
+        <p style="margin-bottom: 1.5rem;">${currentJob.responsibilities}</p>
+        ${canApply && !hasApplied ? `<button class="btn" onclick="showApplyModal()">Apply Now</button>` : ''}
+        ${!canApply ? `<p style="color: #d32f2f; font-weight: 600;">Applications are closed for this position.</p>` : ''}
+        ${hasApplied ? `<p style="color: #2e7d32; font-weight: 600;">You have already applied for this position.</p>` : ''}
+        <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="closeModal('jobModal')">Close</button>
+      `;
+      document.getElementById('jobModal').classList.add('active');
+    }
+
+    function showApplyModal() {
+      if (!profile) {
+        alert('Please complete your profile before applying!');
+        showPage('profile');
+        closeModal('jobModal');
+        return;
+      }
+
+      document.getElementById('applyDetails').innerHTML = `
+        <div style="background: #f5f7fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+          <h3>Applying for: ${currentJob.title}</h3>
+          <p style="color: #666;">${currentJob.company}</p>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <h3>Your Profile</h3>
+          <p><strong>Name:</strong> ${profile.name}</p>
+          <p><strong>Email:</strong> ${profile.email}</p>
+          <p><strong>University:</strong> ${profile.university}</p>
+          <p><strong>Department:</strong> ${profile.department}</p>
+          <p><strong>Year:</strong> ${profile.year}</p>
+          <p><strong>Phone:</strong> ${profile.phone}</p>
+          <p><strong>Resume:</strong> <a href="${profile.resume}" target="_blank">View Resume</a></p>
+        </div>
+        <button class="btn" onclick="submitApplication()">Confirm & Apply</button>
+        <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="closeModal('applyModal')">Cancel</button>
+      `;
+      closeModal('jobModal');
+      document.getElementById('applyModal').classList.add('active');
+    }
+
+    function submitApplication() {
+      const application = {
+        id: Date.now(),
+        jobId: currentJob.id,
+        jobTitle: currentJob.title,
+        company: currentJob.company,
+        appliedDate: new Date().toLocaleDateString(),
+        status: 'Applied'
+      };
+      applications.push(application);
+      
+      // Update job applicants count
+      const job = jobs.find(j => j.id === currentJob.id);
+      job.applicants++;
+      
+      saveData();
+      closeModal('applyModal');
+      alert('Application submitted successfully!');
+      updateStats();
+      renderFeaturedJobs();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function saveProfile(e) {
+      e.preventDefault();
+      profile = {
+        name: document.getElementById('profileName').value,
+        email: document.getElementById('profileEmail').value,
+        university: document.getElementById('profileUniversity').value,
+        department: document.getElementById('profileDepartment').value,
+        year: document.getElementById('profileYear').value,
+        phone: document.getElementById('profilePhone').value,
+        resume: document.getElementById('profileResume').value
+      };
+      localStorage.setItem('profile', JSON.stringify(profile));
+      alert('Profile saved successfully!');
+    }
+
+    function loadProfile() {
+      if (profile) {
+        document.getElementById('profileName').value = profile.name;
+        document.getElementById('profileEmail').value = profile.email;
+        document.getElementById('profileUniversity').value = profile.university;
+        document.getElementById('profileDepartment').value = profile.department;
+        document.getElementById('profileYear').value = profile.year;
+        document.getElementById('profilePhone').value = profile.phone;
+        document.getElementById('profileResume').value = profile.resume;
+      }
+    }
+
+    function renderApplications() {
+      const container = document.getElementById('applicationsList');
+      if (!applications.length) {
+        container.innerHTML = '<p style="text-align: center; color: #666;">No applications yet. Start applying to jobs!</p>';
+        return;
+      }
+      
+      container.innerHTML = applications.map(app => `
+        <div class="application-card">
+          <h3>${app.jobTitle}</h3>
+          <p style="color: #666;">🏢 ${app.company}</p>
+          <p>Applied on: ${app.appliedDate}</p>
+          <span class="status-badge ${app.status === 'Applied' ? 'status-applied' : 'status-withdrawn'}">
+            ${app.status}
+          </span>
+          ${app.status === 'Applied' ? `<button class="btn btn-secondary" style="margin-left: 1rem;" onclick="withdrawApplication(${app.id})">Withdraw</button>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function withdrawApplication(appId) {
+      if (confirm('Are you sure you want to withdraw this application?')) {
+        const app = applications.find(a => a.id === appId);
+        app.status = 'Withdrawn';
+        
+        // Update job applicants count
+        const job = jobs.find(j => j.id === app.jobId);
+        job.applicants--;
+        
+        saveData();
+        renderApplications();
+        updateStats();
+      }
+    }
+
+    function postJob(e) {
+      e.preventDefault();
+      const newJob = {
+        id: Date.now(),
+        title: document.getElementById('jobTitle').value,
+        company: document.getElementById('jobCompany').value,
+        location: document.getElementById('jobLocation').value,
+        type: document.getElementById('jobType').value,
+        stipend: document.getElementById('jobStipend').value,
+        deadline: document.getElementById('jobDeadline').value,
+        skills: document.getElementById('jobSkills').value.split(',').map(s => s.trim()),
+        description: document.getElementById('jobDescription').value,
+        responsibilities: document.getElementById('jobResponsibilities').value,
+        applicants: 0,
+        status: 'open'
+      };
+      
+      jobs.push(newJob);
+      saveData();
+      e.target.reset();
+      alert('Job posted successfully!');
+      updateStats();
+      renderAdminJobs();
+      populateLocationFilter();
+    }
+
+    function renderAdminJobs() {
+      const container = document.getElementById('adminJobsList');
+      container.innerHTML = jobs.map(job => `
+        <div class="application-card">
+          <h3>${job.title}</h3>
+          <p style="color: #666;">🏢 ${job.company} • 📍 ${job.location}</p>
+          <p>Type: ${job.type} • Stipend: ${job.stipend}</p>
+          <p>Applicants: ${job.applicants} • Status: ${job.status}</p>
+          <p>Deadline: ${job.deadline}</p>
+          ${job.status === 'open' ? 
+            `<button class="btn btn-secondary" onclick="toggleJobStatus(${job.id})">Close Job</button>` :
+            `<button class="btn" onclick="toggleJobStatus(${job.id})">Reopen Job</button>`
+          }
+        </div>
+      `).join('');
+    }
+
+    function toggleJobStatus(jobId) {
+      const job = jobs.find(j => j.id === jobId);
+      job.status = job.status === 'open' ? 'closed' : 'open';
+      saveData();
+      renderAdminJobs();
+      updateStats();
+    }
+
+    function populateLocationFilter() {
+      const locations = [...new Set(jobs.map(j => j.location))];
+      const select = document.getElementById('filterLocation');
+      select.innerHTML = '<option value="">All Locations</option>' + 
+        locations.map(loc => `<option value="${loc}">${loc}</option>`).join('');
+    }
+
+    function filterJobs() {
+      const type = document.getElementById('filterType').value;
+      const location = document.getElementById('filterLocation').value;
+      const sort = document.getElementById('sortBy').value;
+      
+      let filtered = jobs.filter(j => j.status === 'open');
+      if (type) filtered = filtered.filter(j => j.type === type);
+      if (location) filtered = filtered.filter(j => j.location === location);
+      
+      // Sort
+      if (sort === 'newest') {
+        filtered.sort((a, b) => b.id - a.id);
+      } else if (sort === 'deadline') {
+        filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+      } else if (sort === 'stipend') {
+        filtered.sort((a, b) => {
+          const aNum = parseInt(a.stipend.replace(/[^0-9]/g, ''));
+          const bNum = parseInt(b.stipend.replace(/[^0-9]/g, ''));
+          return bNum - aNum;
+        });
+      }
+      
+      renderJobsList(filtered);
+    }
+
+    function renderJobsList(jobsToRender = null) {
+      const container = document.getElementById('jobsList');
+      const displayJobs = jobsToRender || jobs.filter(j => j.status === 'open');
+      container.innerHTML = displayJobs.map(job => createJobCard(job)).join('');
+    }
+
+    function searchJobs() {
+      const query = document.getElementById('homeSearch').value.toLowerCase();
+      const filtered = jobs.filter(j => 
+        j.status === 'open' &&
+        (j.title.toLowerCase().includes(query) ||
+         j.company.toLowerCase().includes(query) ||
+         j.location.toLowerCase().includes(query))
+      );
+      document.getElementById('featuredJobs').innerHTML = 
+        filtered.map(job => createJobCard(job)).join('');
+    }
+
+    // Click outside modal to close
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('active');
+      }
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
